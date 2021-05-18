@@ -2,22 +2,25 @@
 #include <stdio.h>
 
 void* memcpyED(void *dest,	const void *src, size_t size) {
-	char *destC = (char*)dest;
-	const char *srcC = (const char*)src;
-	if (destC != NULL && srcC != NULL) {
-		for (size_t i = 0; i <= size; i++) {
+	const unsigned char* srcC = (const unsigned char*)src;
+	unsigned char* destC = (char unsigned*)dest;
+	if (dest != src) {
+		size_t i = 0;
+		while (i < size) {
 			destC[i] = srcC[i];
+			i++;
 		}
 	}
-	return (char*)dest;
+	return dest;
 }
+
 
 void* memchrED(const void* memoryBlock, int searchedChar, size_t size) {
 	char* memoryBlockC = (char*)memoryBlock;
 	char* searchedCharC = (char*)searchedChar;
-	for (size_t i = 0; i <= size; i++) {
+	for (size_t i = 0; i < size; i++) {
 		if (memoryBlockC[i] == searchedCharC) {
-			return (void*)memoryBlockC[i];
+			return memoryBlockC[i];
 		}
 	}
 	return NULL;
@@ -34,21 +37,14 @@ int memcmpED(const void* buffer1, const void* buffer2, size_t size) {
 	return 0;
 }
 
+
 void* memmoveED(void* dest, const void* src, size_t size) {
-	char* tmpBuffer = malloc(size + 1);
-	char* destC = (char*)dest;
-	char* srcC = (char*)src;
-	if(tmpBuffer != NULL){
-		for (size_t i = 0; i < size; size++) {
-			*(tmpBuffer + i) = *(srcC + i);
+	if (dest != src) {
+		while (size--) {
+			*((unsigned char*)dest + size) = *((unsigned char*)src + size);
 		}
-		for (size_t i = 0; i < size; size++) {
-			*(destC + i) = *(tmpBuffer + i);
-		}
-		free(tmpBuffer);
-		return (char *)dest;
 	}
-	return NULL;
+	return dest;
 }
 
 void* memsetED(void* dest, int c, size_t count) {
@@ -68,6 +64,15 @@ char* strcatED(char* strDest, const char* strSrc) {
 			*(strDest + i + sizeSrc) = strSrc[i];
 		}
 		return strDest;
+	}
+	return NULL;
+}
+
+char* strchrED(const char* string, int searchedChar) {
+	for (size_t count = 0; count < sizeof(string); count++) {
+		if (string[count] == searchedChar) {
+			return count;
+		}
 	}
 	return NULL;
 }

@@ -76,3 +76,14 @@ void testStrcatED() {
 	strcatED(str2, str1);
 	printf("%s", str2);
 }
+
+void testStrchrED() {
+	char str1[5] = "aaaba";
+	char char2Find = 'b';
+	char* posOfChar = strchrED(str1, char2Find);
+	int result = (int)(posOfChar - str1 + 1);
+	if (posOfChar != NULL)
+		printf_s("Result:   first %c found at position %d\n", char2Find, result);
+	else
+		printf_s("Result:   %c not found\n", char2Find);
+}

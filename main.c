@@ -1,8 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "test.h"
+#include "input.h"
 
-
-void main() {
-	testMemcpyED();
+int main() {
+	loopInput();
+	return 0;
 }

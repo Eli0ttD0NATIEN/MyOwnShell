@@ -14,7 +14,6 @@ void* memcpyED(void *dest,	const void *src, size_t size) {
 	return dest;
 }
 
-
 void* memchrED(const void* memoryBlock, int searchedChar, size_t size) {
 	char* memoryBlockC = (char*)memoryBlock;
 	char* searchedCharC = (char*)searchedChar;
@@ -36,7 +35,6 @@ int memcmpED(const void* buffer1, const void* buffer2, size_t size) {
 	}
 	return 0;
 }
-
 
 void* memmoveED(void* dest, const void* src, size_t size) {
 	if (dest != src) {
@@ -60,7 +58,7 @@ char* strcatED(char* strDest, const char* strSrc) {
 	const size_t size = sizeof(strDest) + sizeSrc;
 	strDest = malloc(size + 1);
 	if (strDest != NULL) {
-		for (size_t i = 0; i < sizeSrc; i++) {
+		for (size_t i = 0; i < sizeSrc; ++i) {
 			*(strDest + i + sizeSrc) = strSrc[i];
 		}
 		return strDest;
@@ -69,9 +67,9 @@ char* strcatED(char* strDest, const char* strSrc) {
 }
 
 char* strchrED(const char* string, int searchedChar) {
-	for (size_t count = 0; count < sizeof(string); count++) {
+	for (size_t count = 0; count < sizeof(string); ++count) {
 		if (string[count] == searchedChar) {
-			return count;
+			return string + count;
 		}
 	}
 	return NULL;

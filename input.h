@@ -9,7 +9,7 @@ typedef unsigned BOULEAN;
 
 void loopInput();
 int readUserInput(VOID);
-VOID KeyEventProc(KEY_EVENT_RECORD);
-VOID eventDispatcher(INPUT_RECORD* buffer, DWORD nbOfEvent);
+void* keyEventProc(KEY_EVENT_RECORD key, void* charBuffer);
+VOID eventDispatcher(INPUT_RECORD* buffer, DWORD nbOfEvent, void* charBuffer);
 int errHandler(LPTSTR err);
 BOULEAN isEnterKeyPressed(KEY_EVENT_RECORD keyPressed);

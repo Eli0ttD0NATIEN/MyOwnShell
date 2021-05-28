@@ -3,45 +3,47 @@
 #include "input.h"
 #include <Windows.h>
 
-
-HANDLE stdinHandler; //liens vers stdin
+#define USER_INPUT_RETURN_EXIT 1 //Faire en sorte de fair
+HANDLE stdinHandle; //liens vers stdin
 DWORD oldMode;
 size_t nbOfChar = 0;
 
 void loopInput() {
-	for (;;) {
-		readUserInput();
-	}
-}
-
-int readUserInput(VOID) {
-	DWORD nbOfEvRead;
-	INPUT_RECORD irInBuff[128]; //Pointer vers le buffer qui va recevoir les input
-	char* strArray;
-	stdinHandler = GetStdHandle(STD_INPUT_HANDLE);
-	if (stdinHandler == INVALID_HANDLE_VALUE) {
+	stdinHandle = GetStdHandle(STD_INPUT_HANDLE);
+	if (stdinHandle == INVALID_HANDLE_VALUE) {
 		errHandler("GetStdHandle");
+		return USER_INPUT_RETURN_EXIT;
 	}
-	if (!GetConsoleMode(stdinHandler, &oldMode)) {
-		errHandler("GetConsoleMode");
-	}
-	ReadConsoleInput(stdinHandler, irInBuff, 128, &nbOfEvRead);
-	strArray = malloc(128 * sizeof(char));
+	char* strArray = malloc(128 * sizeof(char));
 	if (strArray == NULL) {
 		errHandler("Malloc");
-		free(strArray);
-		exit(EXIT_FAILURE);
 	}
+	for (;;) {
+		if (readUserInput(strArray) == USER_INPUT_RETURN_EXIT) {
+			break;
+		}
+	}
+	free(strArray);
+	ExitProcess(-1);
+}
+
+int readUserInput(char* strArray) {
+	DWORD nbOfEvRead;
+	INPUT_RECORD irInBuff[128]; //Pointer vers le buffer qui va recevoir les input
+	if (!GetConsoleMode(stdinHandle, &oldMode)) {
+		errHandler("GetConsoleMode");
+		return USER_INPUT_RETURN_EXIT;
+	}
+	ReadConsoleInput(stdinHandle, irInBuff, 128, &nbOfEvRead);
 	eventDispatcher(irInBuff, nbOfEvRead, strArray);
-	if (!SetConsoleMode(stdinHandler, oldMode)) {
+	if (!SetConsoleMode(stdinHandle, oldMode)) {
 		errHandler("SetConsoleMode");
-		free(strArray);
+		return USER_INPUT_RETURN_EXIT;
 	}
 	return 0;
 }
 
-VOID eventDispatcher(INPUT_RECORD* buffer, DWORD nbOfEvent, void* charBuffer) {
-	DWORD i = 0;
+VOID eventDispatcher(INPUT_RECORD* buffer, DWORD nbOfEvent, char* charBuffer) {
 	for (size_t i = 0; i < nbOfEvent; i++) {
 		if (buffer[i].EventType == KEY_EVENT) {
 			keyEventProc(buffer[i].Event.KeyEvent, charBuffer);
@@ -49,31 +51,23 @@ VOID eventDispatcher(INPUT_RECORD* buffer, DWORD nbOfEvent, void* charBuffer) {
 	}
 }
 
-void* keyEventProc(KEY_EVENT_RECORD key, void* charBuffer) {
-	char* tempBuffer = (char*)charBuffer;
+void* keyEventProc(KEY_EVENT_RECORD key, char* charBuffer) {
 	if (key.bKeyDown && !isEnterKeyPressed(key)){
-		*(tempBuffer + nbOfChar) = key.uChar.AsciiChar;
-		printf("%c", *(tempBuffer + nbOfChar));
+		charBuffer[nbOfChar] = key.uChar.AsciiChar;
+		printf("%c", charBuffer[nbOfChar]);
 		nbOfChar++;
 	}
 	else if(isEnterKeyPressed(key)){
-		*(tempBuffer + nbOfChar) = '\0';
-		printf("\n");
-		for (size_t i = 0; i < nbOfChar; i++) {
-			printf("%c", *(tempBuffer + nbOfChar));
-		}
+		charBuffer[nbOfChar] = '\0';
+		printf("\n%s", charBuffer);
 		nbOfChar = 0;
-		return tempBuffer;
-	}
-	else {
-		free(tempBuffer);
+		return charBuffer;
 	}
 }
 
 int errHandler(LPTSTR err) {
 	fprintf(stderr, "%s \n", err);
-	SetConsoleMode(stdinHandler, oldMode);
-	ExitProcess(0);
+	SetConsoleMode(stdinHandle, oldMode);
 }
 
 BOULEAN isEnterKeyPressed(KEY_EVENT_RECORD keyPressed) {

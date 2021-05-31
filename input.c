@@ -1,18 +1,20 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "stringED.h"
 #include "input.h"
 #include <Windows.h>
 
 #define USER_INPUT_RETURN_EXIT 1 //Faire en sorte de fair
+#define USER_LINE_END 2
 HANDLE stdinHandle; //liens vers stdin
 DWORD oldMode;
 size_t nbOfChar = 0;
+BOULEAN lineEnd = false;
 
 void loopInput() {
 	stdinHandle = GetStdHandle(STD_INPUT_HANDLE);
 	if (stdinHandle == INVALID_HANDLE_VALUE) {
 		errHandler("GetStdHandle");
-		return USER_INPUT_RETURN_EXIT;
 	}
 	char* strArray = malloc(128 * sizeof(char));
 	if (strArray == NULL) {
@@ -21,6 +23,11 @@ void loopInput() {
 	for (;;) {
 		if (readUserInput(strArray) == USER_INPUT_RETURN_EXIT) {
 			break;
+		}
+		if (lineEnd) {
+			char* userLine = malloc(nbOfChar+1 * sizeof(char));
+			memmoveED(userLine, strArray, nbOfChar+1);
+			resetInput();
 		}
 	}
 	free(strArray);
@@ -59,8 +66,7 @@ void* keyEventProc(KEY_EVENT_RECORD key, char* charBuffer) {
 	}
 	else if(isEnterKeyPressed(key)){
 		charBuffer[nbOfChar] = '\0';
-		printf("\n%s", charBuffer);
-		nbOfChar = 0;
+		lineEnd = true;
 		return charBuffer;
 	}
 }
@@ -72,4 +78,9 @@ int errHandler(LPTSTR err) {
 
 BOULEAN isEnterKeyPressed(KEY_EVENT_RECORD keyPressed) {
 	return (keyPressed.wVirtualKeyCode == ENTER_KEY) ? true : false;
+}
+
+void resetInput() {
+	nbOfChar = 0;
+	lineEnd = false;
 }

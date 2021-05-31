@@ -141,11 +141,13 @@
   <ItemGroup>
     <ClCompile Include="input.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="parser.c" />
     <ClCompile Include="stringED.c" />
     <ClCompile Include="test.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h" />
+    <ClInclude Include="parser.h" />
     <ClInclude Include="stringED.h" />
     <ClInclude Include="test.h" />
   </ItemGroup>

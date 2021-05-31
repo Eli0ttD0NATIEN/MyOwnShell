@@ -53,6 +53,7 @@ void* memsetED(void* dest, int c, size_t count) {
 	}
 	return destC;
 }
+
 char* strcatED(char* strDest, const char* strSrc) {
 	const size_t sizeSrc = sizeof(strSrc);
 	const size_t size = sizeof(strDest) + sizeSrc;

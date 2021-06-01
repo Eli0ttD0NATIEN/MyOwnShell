@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "stringED.h"
 #include "input.h"
+#include "parser.h"
 #include <Windows.h>
 
 #define USER_INPUT_RETURN_EXIT 1 //Faire en sorte de fair
@@ -27,7 +28,8 @@ void loopInput() {
 		if (lineEnd) {
 			char* userLine = malloc(nbOfChar+1 * sizeof(char));
 			memmoveED(userLine, strArray, nbOfChar+1);
-			resetInput();
+			resetInput(strArray);
+			parserMain(userLine);
 		}
 	}
 	free(strArray);

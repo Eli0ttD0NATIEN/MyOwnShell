@@ -146,6 +146,7 @@
     <ClCompile Include="test.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="availableCommand.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="stringED.h" />

@@ -4,6 +4,6 @@
 #include "input.h"
 
 int main() {
-	loopInput();
+	testStrTokED();
 	return 0;
 }

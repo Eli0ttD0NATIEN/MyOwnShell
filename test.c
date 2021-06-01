@@ -87,3 +87,25 @@ void testStrchrED() {
 	else
 		printf_s("Result:   %c not found\n", char2Find);
 }
+
+void testStrTokED() {
+	// La chaine de caractères à traiter.
+	char str[] = "- CECI, est un test-relou ! pour ce pc -";
+	// La définitions de séparateurs connus.
+	const char* separators = " ,.-!";
+
+	// On cherche à récupérer, un à un, tous les mots (token) de la phrase
+	// et on commence par le premier.
+	char* strToken = strtokED(str, separators);
+	while (strToken != NULL) {
+		printf("%s\n", strToken);
+		// On demande le token suivant.
+		strToken = strtokED(NULL, separators);
+	}
+}
+
+void testStrLenED() {
+	const char* test = "ouioui";
+	int size = (int)strlenED(test);
+	printf("expected : 6, result : %d", size);
+}

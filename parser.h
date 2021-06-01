@@ -1,0 +1,1 @@
+void parserMain(void* bufferToParse);

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "stringED.h";
 
 void* memcpyED(void *dest,	const void *src, size_t size) {
 	const unsigned char* srcC = (const unsigned char*)src;
@@ -67,11 +68,47 @@ char* strcatED(char* strDest, const char* strSrc) {
 	return NULL;
 }
 
-char* strchrED(const char* string, int searchedChar) {
-	for (size_t count = 0; count < sizeof(string); ++count) {
-		if (string[count] == searchedChar) {
-			return string + count;
+char* strchrED(const char* str, int searchedChar) {
+	while (*str != (char)searchedChar) {
+		if (!*str++) return NULL;
+	}
+	return (char*)str;
+}
+
+size_t strlenED(const char* str) {
+	size_t len = 0;
+	while (*str++) {
+		len++;
+	}
+	return len;
+}
+
+char* strtokED(char* strToken, const char* delimiters) {
+	static char* tmpBuffer = NULL;
+	static char* finalBuffer = NULL;
+	int i;
+	static BOULEAN endToken = false;
+	if (delimiters == NULL) return NULL;
+	if (endToken) return NULL;
+	if (strToken != NULL) tmpBuffer = strToken;
+	finalBuffer = tmpBuffer;
+	for (i = 0; i <= strlenED(tmpBuffer); i++) {
+		if (tmpBuffer[i] == '\0') {
+			endToken = true;
+			return finalBuffer;
+		}
+		if (isADelimiter(tmpBuffer + i, delimiters)) {
+			tmpBuffer[i] = '\0';
+			tmpBuffer += i+1;
+			return finalBuffer;
 		}
 	}
 	return NULL;
+}
+
+BOULEAN isADelimiter(char* c, const char* delimiters) {
+	while (*delimiters) {
+		if (*delimiters++ == *c) return true;
+	}
+	return false;
 }
